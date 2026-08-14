@@ -1,0 +1,4 @@
+interface:
+  display_name: "Context Handoff"
+  short_description: "Carry verified state into a fresh Codex session"
+  default_prompt: "Use $context-handoff to create a compact continuation checkpoint for this work."

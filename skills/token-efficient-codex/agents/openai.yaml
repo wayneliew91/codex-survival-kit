@@ -1,0 +1,4 @@
+interface:
+  display_name: "Token-Efficient Codex"
+  short_description: "Cut wasted context without cutting verification"
+  default_prompt: "Use $token-efficient-codex to complete this task with minimal unnecessary context while preserving required verification."
