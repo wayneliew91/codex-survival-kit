@@ -15,9 +15,19 @@ Contributions should make Codex behavior more reliable on a recurring, general p
 
 ## Development
 
+Edit skill content only under the top-level `skills/` directory. The plugin copy under `plugins/codex-survival-kit/skills/` is generated. After any skill change, regenerate and verify the mirror:
+
+```bash
+python3 scripts/sync_plugin_skills.py
+python3 scripts/sync_plugin_skills.py --check
+```
+
+Run the full repository checks:
+
 ```bash
 python3 -m unittest discover -s tests -v
 python3 scripts/validate_skills.py .
+python3 scripts/sync_plugin_skills.py --check
 ```
 
 For behavior-changing skill edits, add the pressure case first. If you have access to a fresh Codex/subagent runtime, compare behavior without and with the skill and summarize the observed difference in the pull request. Do not fabricate a baseline when live replay was not run.

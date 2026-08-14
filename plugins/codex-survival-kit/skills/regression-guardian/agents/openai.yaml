@@ -1,0 +1,4 @@
+interface:
+  display_name: "Regression Guardian"
+  short_description: "Protect accepted behavior while changing code"
+  default_prompt: "Use $regression-guardian to protect accepted behavior while making and verifying this change."
