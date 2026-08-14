@@ -1,0 +1,3 @@
+interface:
+  display_name: "Valid Skill"
+  short_description: "Validation fixture"
