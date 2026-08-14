@@ -1,0 +1,33 @@
+name: Skill request
+description: Propose a recurring Codex reliability problem worth a skill
+title: "[skill] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Recurring problem
+      description: What observable situation should cause this skill to be used?
+    validations:
+      required: true
+  - type: textarea
+    id: pressure
+    attributes:
+      label: Pressure scenario
+      description: Give a realistic task where a general agent is likely to fail without specialized guidance.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Why this belongs in a reusable public skill
+      description: Explain why this is not merely a project-specific convention.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: This proposal contains no proprietary prompt, private repository content, credentials, or customer data.
+          required: true
