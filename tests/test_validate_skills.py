@@ -75,6 +75,14 @@ class ValidateSkillTests(unittest.TestCase):
         errors = validate_repo(root)
         self.assertTrue(any("agents/openai.yaml" in e for e in errors))
 
+    def test_repo_validates_plugin_marketplace_when_present(self):
+        root, skill = self.make_skill()
+        marketplace = root / ".agents" / "plugins" / "marketplace.json"
+        marketplace.parent.mkdir(parents=True)
+        marketplace.write_text("{}")
+        errors = validate_repo(root)
+        self.assertTrue(any("marketplace" in e.lower() for e in errors))
+
 
 if __name__ == "__main__":
     unittest.main()
