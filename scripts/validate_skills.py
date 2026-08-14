@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -128,6 +129,116 @@ def validate_skill_dir(skill_dir: Path, repo_root: Path) -> list[str]:
     return errors
 
 
+def _load_json_object(path: Path, label: str) -> tuple[dict | None, list[str]]:
+    if not path.is_file():
+        return None, [f"{path}: missing {label}"]
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return None, [f"{path}: invalid {label}: {exc}"]
+    if not isinstance(payload, dict):
+        return None, [f"{path}: {label} must contain a JSON object"]
+    return payload, []
+
+
+def _relative_file_map(root: Path) -> dict[Path, Path]:
+    if not root.is_dir():
+        return {}
+    return {path.relative_to(root): path for path in root.rglob("*") if path.is_file()}
+
+
+def validate_plugin_distribution(repo_root: Path) -> list[str]:
+    repo_root = Path(repo_root).resolve()
+    marketplace_path = repo_root / ".agents" / "plugins" / "marketplace.json"
+    plugin_root = repo_root / "plugins" / "codex-survival-kit"
+    manifest_path = plugin_root / ".codex-plugin" / "plugin.json"
+
+    if not marketplace_path.exists() and not plugin_root.exists():
+        return []
+
+    errors: list[str] = []
+    marketplace, marketplace_errors = _load_json_object(marketplace_path, "marketplace manifest")
+    manifest, manifest_errors = _load_json_object(manifest_path, "plugin manifest")
+    errors.extend(marketplace_errors)
+    errors.extend(manifest_errors)
+
+    version_path = repo_root / "VERSION"
+    version = ""
+    if version_path.is_file():
+        try:
+            version = version_path.read_text(encoding="utf-8").strip()
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"{version_path}: cannot read version: {exc}")
+    else:
+        errors.append(f"{version_path}: missing VERSION for plugin distribution")
+
+    if manifest is not None:
+        expected = {
+            "name": "codex-survival-kit",
+            "skills": "./skills/",
+            "license": "MIT",
+            "repository": "https://github.com/wayneliew91/codex-survival-kit",
+        }
+        for field, value in expected.items():
+            if manifest.get(field) != value:
+                errors.append(f"{manifest_path}: {field!r} must equal {value!r}")
+        if version and manifest.get("version") != version:
+            errors.append(f"{manifest_path}: version must match root VERSION {version!r}")
+        for forbidden in ("apps", "mcpServers", "hooks"):
+            if forbidden in manifest:
+                errors.append(f"{manifest_path}: skill-only plugin must not declare {forbidden!r}")
+
+        interface = manifest.get("interface")
+        if not isinstance(interface, dict):
+            errors.append(f"{manifest_path}: interface must be an object")
+        else:
+            if interface.get("category") != "Developer Tools":
+                errors.append(f"{manifest_path}: interface.category must be 'Developer Tools'")
+            prompts = interface.get("defaultPrompt")
+            if not isinstance(prompts, list) or not 1 <= len(prompts) <= 3:
+                errors.append(f"{manifest_path}: interface.defaultPrompt must contain 1 to 3 prompts")
+            elif any(not isinstance(prompt, str) or not prompt.strip() or len(prompt) > 128 for prompt in prompts):
+                errors.append(f"{manifest_path}: each default prompt must be non-empty and at most 128 characters")
+
+    if marketplace is not None:
+        if marketplace.get("name") != "codex-survival-kit":
+            errors.append(f"{marketplace_path}: marketplace name must be 'codex-survival-kit'")
+        entries = marketplace.get("plugins")
+        if not isinstance(entries, list):
+            errors.append(f"{marketplace_path}: plugins must be an array")
+        else:
+            matching = [entry for entry in entries if isinstance(entry, dict) and entry.get("name") == "codex-survival-kit"]
+            if len(matching) != 1:
+                errors.append(f"{marketplace_path}: must contain exactly one codex-survival-kit entry")
+            else:
+                entry = matching[0]
+                expected_source = {"source": "local", "path": "./plugins/codex-survival-kit"}
+                expected_policy = {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}
+                if entry.get("source") != expected_source:
+                    errors.append(f"{marketplace_path}: plugin source must equal {expected_source!r}")
+                if entry.get("policy") != expected_policy:
+                    errors.append(f"{marketplace_path}: plugin policy must equal {expected_policy!r}")
+                if entry.get("category") != "Developer Tools":
+                    errors.append(f"{marketplace_path}: plugin category must be 'Developer Tools'")
+
+    canonical_root = repo_root / "skills"
+    mirrored_root = plugin_root / "skills"
+    canonical = _relative_file_map(canonical_root)
+    mirrored = _relative_file_map(mirrored_root)
+    for rel in sorted(canonical.keys() - mirrored.keys()):
+        errors.append(f"{mirrored_root}: missing mirrored skill file {rel.as_posix()}")
+    for rel in sorted(mirrored.keys() - canonical.keys()):
+        errors.append(f"{mirrored_root}: unexpected mirrored skill file {rel.as_posix()}")
+    for rel in sorted(canonical.keys() & mirrored.keys()):
+        try:
+            if canonical[rel].read_bytes() != mirrored[rel].read_bytes():
+                errors.append(f"{mirrored_root / rel}: differs from canonical skills/{rel.as_posix()}")
+        except OSError as exc:
+            errors.append(f"{rel}: cannot compare plugin mirror: {exc}")
+
+    return errors
+
+
 def validate_repo(repo_root: Path) -> list[str]:
     repo_root = Path(repo_root).resolve()
     skills_root = repo_root / "skills"
@@ -141,6 +252,7 @@ def validate_repo(repo_root: Path) -> list[str]:
     errors: list[str] = []
     for skill_dir in skill_dirs:
         errors.extend(validate_skill_dir(skill_dir, repo_root))
+    errors.extend(validate_plugin_distribution(repo_root))
     return errors
 
 

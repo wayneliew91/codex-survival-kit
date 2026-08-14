@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tibo Reset"
+  short_description: "Verify Codex reset claims before planning usage"
+  default_prompt: "Use $tibo-reset to verify this Codex reset claim from current evidence and plan usage conservatively."

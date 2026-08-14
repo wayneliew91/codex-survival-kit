@@ -24,7 +24,20 @@ Agentic coding gets expensive and unreliable when the working set grows faster t
 
 ## Install
 
-Codex's `$skill-installer` can download skills from other repositories for local setup and experimentation. Ask it to install the desired path from this repository, for example `skills/token-efficient-codex`.
+### Install the whole kit as a Codex plugin
+
+Add this repository as a plugin marketplace, then install the bundled skill-only plugin:
+
+```bash
+codex plugin marketplace add wayneliew91/codex-survival-kit
+codex plugin add codex-survival-kit@codex-survival-kit
+```
+
+The plugin contains only the five skills in this repository. It declares no apps, MCP servers, hooks, credentials, or external permissions.
+
+### Install individual skills
+
+Codex's `$skill-installer` can download a single skill from another repository. Ask it to install the desired path from this repository, for example `skills/token-efficient-codex`.
 
 For manual user-level installation, copy each desired skill directory under `$HOME/.agents/skills/`, for example:
 
@@ -34,7 +47,7 @@ $HOME/.agents/skills/token-efficient-codex/
 
 For repository-scoped installation, place the desired skill directories under `.agents/skills/` in that repository. Keep each skill as its own direct child directory.
 
-For broad reusable distribution, OpenAI currently recommends packaging skills as a plugin. This repository remains the transparent source and local/repository-install collection; a plugin can be added later as a distribution layer without changing the individual skill sources.
+The top-level `skills/` directory is the canonical source. `plugins/codex-survival-kit/skills/` is a generated distribution mirror and must not be edited by hand.
 
 ## Examples
 
@@ -100,7 +113,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md). New skills should solve one recurring 
 
 ## Status
 
-Initial release target: `0.1.0`.
+Current distribution version: `0.2.0`.
 
 The pressure scenarios in this repository are forward-test definitions. The initial build environment did not include a Codex CLI/subagent runtime, so live behavioral replay is not claimed where it was not run.
 

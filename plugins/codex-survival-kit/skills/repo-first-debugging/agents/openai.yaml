@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo-First Debugging"
+  short_description: "Debug from repository evidence, not guesses"
+  default_prompt: "Use $repo-first-debugging to diagnose this failure from the current repository state before changing code."
