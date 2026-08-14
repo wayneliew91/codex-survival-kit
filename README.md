@@ -24,15 +24,17 @@ Agentic coding gets expensive and unreliable when the working set grows faster t
 
 ## Install
 
-Codex's built-in skill installer can install a skill from a public GitHub repository path. Ask Codex, for example:
+Codex's `$skill-installer` can download skills from other repositories for local setup and experimentation. Ask it to install the desired path from this repository, for example `skills/token-efficient-codex`.
+
+For manual user-level installation, copy each desired skill directory under `$HOME/.agents/skills/`, for example:
 
 ```text
-$skill-installer Install token-efficient-codex from wayneliew91/codex-survival-kit at skills/token-efficient-codex.
+$HOME/.agents/skills/token-efficient-codex/
 ```
 
-Install the whole kit by asking it to install each path under `skills/`.
+For repository-scoped installation, place the desired skill directories under `.agents/skills/` in that repository. Keep each skill as its own direct child directory.
 
-For a manual installation, copy the desired skill directory into your Codex skills directory (normally `$CODEX_HOME/skills`, with `CODEX_HOME` defaulting to `~/.codex`). Keep each skill as its own direct child directory.
+For broad reusable distribution, OpenAI currently recommends packaging skills as a plugin. This repository remains the transparent source and local/repository-install collection; a plugin can be added later as a distribution layer without changing the individual skill sources.
 
 ## Examples
 
