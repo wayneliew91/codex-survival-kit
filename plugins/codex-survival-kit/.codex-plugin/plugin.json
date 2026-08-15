@@ -1,7 +1,7 @@
 {
   "name": "codex-survival-kit",
-  "version": "0.2.0",
-  "description": "Practical Codex workflows for token efficiency, context recovery, regression safety, repo-first debugging, and usage-reset verification.",
+  "version": "0.3.0",
+  "description": "Practical Codex workflows for token efficiency, context recovery, regression safety, repo-first debugging, usage-reset verification, and high-signal responses.",
   "author": {
     "name": "wayneliew91",
     "url": "https://github.com/wayneliew91"
@@ -23,7 +23,7 @@
   "interface": {
     "displayName": "Codex Survival Kit",
     "shortDescription": "Token-efficient, regression-safe workflows for Codex",
-    "longDescription": "A skill-only Codex plugin for reducing wasted context, preserving long-task state, verifying reported usage resets, guarding known-good behavior, and debugging from current repository evidence.",
+    "longDescription": "A skill-only Codex plugin for reducing wasted context, preserving long-task state, verifying reported usage resets, guarding known-good behavior, debugging from current repository evidence, and producing direct decision-ready answers.",
     "developerName": "wayneliew91",
     "category": "Developer Tools",
     "websiteURL": "https://github.com/wayneliew91/codex-survival-kit",

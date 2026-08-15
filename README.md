@@ -1,6 +1,6 @@
 # Codex Survival Kit
 
-Practical Codex skills for **token efficiency, context recovery, regression safety, repo-first debugging, and usage-reset verification**.
+Practical Codex skills for **token efficiency, context recovery, regression safety, repo-first debugging, usage-reset verification, and high-signal answers**.
 
 This repository is for maintainers who want Codex to stay useful during long, messy, quota-constrained software work without replacing verification with shortcuts.
 
@@ -13,6 +13,7 @@ This repository is for maintainers who want Codex to stay useful during long, me
 | [`context-handoff`](skills/context-handoff/SKILL.md) | a long task needs a compact continuation checkpoint for a fresh session or another agent |
 | [`regression-guardian`](skills/regression-guardian/SKILL.md) | a fix/refactor/release could silently revert behavior that was already accepted |
 | [`repo-first-debugging`](skills/repo-first-debugging/SKILL.md) | debugging is drifting into guesses, broad edits, stale context, or repeated hypotheses |
+| [`high-signal-response`](skills/high-signal-response/SKILL.md) | answers need to be direct, strategic, decision-oriented, explicit about trade-offs, or calibrated about uncertainty |
 
 ## Why these exist
 
@@ -33,7 +34,7 @@ codex plugin marketplace add wayneliew91/codex-survival-kit
 codex plugin add codex-survival-kit@codex-survival-kit
 ```
 
-The plugin contains only the five skills in this repository. It declares no apps, MCP servers, hooks, credentials, or external permissions.
+The plugin contains only the six skills in this repository. It declares no apps, MCP servers, hooks, credentials, or external permissions.
 
 ### Install individual skills
 
@@ -83,6 +84,12 @@ $regression-guardian Refactor this module without reintroducing the edge case fi
 $repo-first-debugging Diagnose this CI failure from the current branch and use one discriminating test at a time.
 ```
 
+### Raise answer signal without adding padding
+
+```text
+$high-signal-response Compare these three migration options, state the real trade-offs, and recommend one without padding the answer.
+```
+
 ## Design
 
 Each skill follows Codex's progressive-disclosure model:
@@ -113,7 +120,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md). New skills should solve one recurring 
 
 ## Status
 
-Current distribution version: `0.2.0`.
+Current distribution version: `0.3.0`.
 
 The pressure scenarios in this repository are forward-test definitions. The initial build environment did not include a Codex CLI/subagent runtime, so live behavioral replay is not claimed where it was not run.
 

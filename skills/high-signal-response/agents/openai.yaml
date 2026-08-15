@@ -1,0 +1,4 @@
+interface:
+  display_name: "High-Signal Response"
+  short_description: "Give direct, decision-ready answers without filler"
+  default_prompt: "Use $high-signal-response to answer directly, separate facts from inference, show material trade-offs, and recommend a path when the evidence supports one."

@@ -8,11 +8,12 @@ EXPECTED_SKILLS = {
     "context-handoff",
     "regression-guardian",
     "repo-first-debugging",
+    "high-signal-response",
 }
 
 
 class RepositoryPackageTests(unittest.TestCase):
-    def test_exact_initial_skill_set_exists(self):
+    def test_exact_skill_set_exists(self):
         actual = {p.name for p in (ROOT / "skills").iterdir() if p.is_dir()}
         self.assertEqual(actual, EXPECTED_SKILLS)
 
